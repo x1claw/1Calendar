@@ -235,6 +235,10 @@
             gap: 6px;
         }
 
+        .hero-feature svg {
+            color: var(--text-primary);
+        }
+
         .btn-primary {
             background: var(--accent-red);
             color: white;
@@ -666,13 +670,13 @@
         <div class="container hero-content">
             <div class="hero-text">
                 <div class="hero-badge">
-                    🎉 法定假日 · 🍎 Menu Bar 原生
+                    🎉 法定假日 · Menu Bar 原生
                 </div>
                 <h1 class="hero-title">日历新体验<br><span>尽在掌握</span></h1>
                 <p class="hero-subtitle">"The elegant calendar for Chinese users"</p>
                 <div class="hero-features">
                     <div class="hero-feature">🎉 自动标注法定节假日</div>
-                    <div class="hero-feature">🍎 macOS Menu Bar 快捷访问</div>
+                    <div class="hero-feature"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg> macOS Menu Bar 快捷访问</div>
                 </div>
             </div>
             <div class="hero-visual">
@@ -681,70 +685,11 @@
                     <div class="float-element float-element-2"></div>
                     <div class="calendar-header">
                         <div>
-                            <div class="calendar-month">三月</div>
-                            <div class="calendar-year">2026</div>
+                            <div class="calendar-month" id="calendarMonth"></div>
+                            <div class="calendar-year" id="calendarYear"></div>
                         </div>
                     </div>
-                    <div class="calendar-grid">
-                        <div class="calendar-day-header">日</div>
-                        <div class="calendar-day-header">一</div>
-                        <div class="calendar-day-header">二</div>
-                        <div class="calendar-day-header">三</div>
-                        <div class="calendar-day-header">四</div>
-                        <div class="calendar-day-header">五</div>
-                        <div class="calendar-day-header">六</div>
-
-                        <div class="calendar-day">1</div>
-                        <div class="calendar-day">2</div>
-                        <div class="calendar-day">3</div>
-                        <div class="calendar-day">4</div>
-                        <div class="calendar-day">5</div>
-                        <div class="calendar-day">6</div>
-                        <div class="calendar-day">7</div>
-                        <div class="calendar-day">8</div>
-                        <div class="calendar-day">9</div>
-                        <div class="calendar-day">10</div>
-                        <div class="calendar-day">11</div>
-                        <div class="calendar-day">12</div>
-                        <div class="calendar-day">13</div>
-                        <div class="calendar-day">14</div>
-                        <div class="calendar-day today">
-                            15
-                            <span class="lunar-text">二月十八</span>
-                        </div>
-                        <div class="calendar-day">16</div>
-                        <div class="calendar-day">17</div>
-                        <div class="calendar-day">
-                            18
-                            <div class="holiday-badge"></div>
-                        </div>
-                        <div class="calendar-day">19</div>
-                        <div class="calendar-day">20</div>
-                        <div class="calendar-day">
-                            21
-                            <span class="lunar-text">春分</span>
-                        </div>
-                        <div class="calendar-day">22</div>
-                        <div class="calendar-day">23</div>
-                        <div class="calendar-day">24</div>
-                        <div class="calendar-day">25</div>
-                        <div class="calendar-day">26</div>
-                        <div class="calendar-day">27</div>
-                        <div class="calendar-day">28</div>
-                        <div class="calendar-day">29</div>
-                        <div class="calendar-day">30</div>
-                        <div class="calendar-day">31</div>
-                    </div>
-                    <div class="calendar-events">
-                        <div class="event-item">
-                            <span class="event-dot red"></span>
-                            消费者权益日
-                        </div>
-                        <div class="event-item">
-                            <span class="event-dot green"></span>
-                            春分 - 春季中点
-                        </div>
-                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
                 </div>
             </div>
         </div>
@@ -784,6 +729,39 @@
     </footer>
 
     <script>
+        // Generate calendar
+        (function generateCalendar() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+
+            const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+            const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
+
+            document.getElementById('calendarMonth').textContent = monthNames[month];
+            document.getElementById('calendarYear').textContent = year;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = now.getDate();
+
+            let html = '';
+            dayNames.forEach(day => {
+                html += `<div class="calendar-day-header">${day}</div>`;
+            });
+
+            for (let i = 0; i < firstDay; i++) {
+                html += '<div class="calendar-day"></div>';
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const isToday = day === today;
+                html += `<div class="calendar-day${isToday ? ' today' : ''}">${day}</div>`;
+            }
+
+            document.getElementById('calendarGrid').innerHTML = html;
+        })();
+
         // Navbar scroll effect
         const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
